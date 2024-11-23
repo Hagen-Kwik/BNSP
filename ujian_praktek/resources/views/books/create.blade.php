@@ -16,11 +16,16 @@
         </div>
         <div class="mb-3">
             <label for="categories" class="form-label">Categories</label>
-            <select name="category_ids[]" id="categories" class="form-control" multiple required>
+            <div id="categories" class="category-checkboxes">
                 @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="category_ids[]" value="{{ $category->id }}" id="category-{{ $category->id }}">
+                        <label class="form-check-label" for="category-{{ $category->id }}">
+                            {{ $category->name }}
+                        </label>
+                    </div>
                 @endforeach
-            </select>
+            </div>
         </div>
         <div class="mb-3">
             <label for="member_id" class="form-label">Borrower</label>
@@ -33,4 +38,14 @@
         </div>
         <button type="submit" class="btn btn-success">Create Book</button>
     </form>
+
+    <style>
+        .category-checkboxes {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .category-checkboxes .form-check {
+            margin-bottom: 10px;
+        }
+    </style>
 @endsection

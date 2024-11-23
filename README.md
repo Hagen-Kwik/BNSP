@@ -1,2 +1,3 @@
 # BNSP
-This Application is for Universitas Ciputra BNSP Certification
+This website is made for Hagen Kwik's Universitas Ciputra BNSP Certification
+
