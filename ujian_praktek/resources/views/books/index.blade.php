@@ -1,9 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Books List</h1>
+    <h1 class="mb-4">Books List</h1>
 
-    <a href="{{ route('books.create') }}" class="btn btn-primary mb-3">Add New Book</a>
+    <!-- Filter Controls -->
+    <div class="mb-3 d-flex justify-content-between">
+        <div>
+            <a href="{{ route('books.create') }}" class="btn btn-primary">Add New Book</a>
+        </div>
+
+        <div>
+            <!-- Filter by Category -->
+            <form action="{{ route('books.index') }}" method="GET" class="d-inline">
+                <select name="category_id" class="form-select d-inline" style="width: auto;">
+                    <option value="">Select Category (All)</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-info">Filter by Category</button>
+            </form>
+
+            <!-- Filter by Member -->
+            <form action="{{ route('books.index') }}" method="GET" class="d-inline">
+                <select name="member_id" class="form-select d-inline" style="width: auto;">
+                    <option value="">Select Member (All)</option>
+                    @foreach ($members as $member)
+                        <option value="{{ $member->id }}" {{ request('member_id') == $member->id ? 'selected' : '' }}>
+                            {{ $member->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-info">Filter by Member</button>
+            </form>
+
+            <!-- Clear Filters Button -->
+            <form action="{{ route('books.index') }}" method="GET" class="d-inline">
+                <button type="submit" class="btn btn-danger">Clear Filters</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Book Table -->
     <table class="table table-striped table-bordered">

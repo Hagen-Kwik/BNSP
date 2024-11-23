@@ -10,10 +10,31 @@ use Illuminate\Http\Request;
 class BookController extends Controller
 {
     // Display a list of the books
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('member', 'categories')->get();
-        return view('books.index', compact('books'));
+        $categoryId = $request->input('category_id');
+        $memberId = $request->input('member_id');
+
+        $categories = Category::all();
+        $members = Member::all();
+
+        $books = Book::with('categories', 'member');
+
+        // Filter by category if selected
+        if ($categoryId) {
+            $books = $books->whereHas('categories', function ($query) use ($categoryId) {
+                $query->where('categories.id', $categoryId);
+            });
+        }
+
+        // Filter by member if selected
+        if ($memberId) {
+            $books = $books->where('member_id', $memberId);
+        }
+
+        $books = $books->get();
+
+        return view('books.index', compact('books', 'categories', 'members'));
     }
 
     // Show the page for creating a new book
@@ -84,5 +105,4 @@ class BookController extends Controller
 
         return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
-    
 }
