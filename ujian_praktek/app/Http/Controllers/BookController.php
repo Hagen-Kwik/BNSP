@@ -2,63 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
+use App\Models\Category;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // reads Book
     public function index()
     {
-        //
+        $books = Book::with('categories')->get();
+        return view('books.index', compact('books'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // create Book page
     public function create()
     {
-        //
+        $categories = Category::all();
+        $members = Member::all();
+        return view('books.create', compact('categories', 'members'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // create Book
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'author' => 'required',
+        ]);
+
+        $book = Book::create($request->only('title', 'author', 'member_id'));
+        $book->categories()->sync($request->category_ids); // Sync categories
+
+        return redirect()->route('books.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // update Book page
+    public function edit(Book $book)
     {
-        //
+        $categories = Category::all();
+        $members = Member::all();
+        return view('books.edit', compact('book', 'categories', 'members'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // update Book 
+    public function update(Request $request, Book $book)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'author' => 'required',
+        ]);
+
+        $book->update($request->only('title', 'author', 'member_id'));
+        $book->categories()->sync($request->category_ids);
+
+        return redirect()->route('books.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // delete Book 
+    public function destroy(Book $book)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $book->delete();
+        return redirect()->route('books.index');
     }
 }

@@ -2,63 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    //read Member
     public function index()
     {
-        //
+        $members = Member::all();
+        return view('members.index', compact('members'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // create member page
     public function create()
     {
-        //
+        return view('members.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // create member
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'password' => 'required',
+        ]);
+
+        Member::create($request->all());
+        return redirect()->route('members.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // update member page
+    public function edit(Member $member)
     {
-        //
+        return view('members.edit', compact('member'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // update member
+    public function update(Request $request, Member $member)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'password' => 'required',
+        ]);
+
+        $member->update($request->all());
+        return redirect()->route('members.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // delete member 
+    public function destroy(Member $member)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $member->delete();
+        return redirect()->route('members.index');
     }
 }
