@@ -9,7 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::resource('books', BookController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('members', MemberController::class);

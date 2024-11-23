@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('author');
-            $table->unsignedBigInteger('member_id')->nullable(); // Books do not require a member_id
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->foreign('member_id')
                 ->references('id')
                 ->on('members')
-                ->onDelete('restrict'); // Prevent deletion of a member if they are associated with any book
+                ->onDelete('restrict'); 
             $table->timestamps();
         });
     }
