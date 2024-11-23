@@ -20,12 +20,10 @@ class MemberController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the input, ensuring 'name' is unique
         $request->validate([
-            'name' => 'required|unique:members,name|max:255', // Ensure 'name' is unique
+            'name' => 'required|unique:members,name|max:255', 
         ]);
 
-        // Create the member
         Member::create([
             'name' => $request->name,
         ]);
@@ -40,12 +38,10 @@ class MemberController extends Controller
 
     public function update(Request $request, Member $member)
     {
-        // Validate the input, ensuring 'name' is unique
         $request->validate([
-            'name' => 'required|unique:members,name,' . $member->id . '|max:255', // Exclude the current member
+            'name' => 'required|unique:members,name,' . $member->id . '|max:255', 
         ]);
 
-        // Update the member
         $member->update([
             'name' => $request->name,
         ]);
@@ -53,9 +49,16 @@ class MemberController extends Controller
         return redirect()->route('members.index')->with('success', 'Member updated successfully!');
     }
 
-    public function destroy(Member $member)
+    public function destroy($id)
     {
+        $member = Member::find($id);
+
+        if ($member->books()->count() > 0) {
+            return redirect()->route('members.index')->with('error', "Member cannot be deleted as they are associated with one or more books.");
+        }
+
         $member->delete();
-        return redirect()->route('members.index')->with('success', 'Member deleted successfully!');
+
+        return redirect()->route('members.index')->with('success', "Member deleted successfully.");
     }
 }

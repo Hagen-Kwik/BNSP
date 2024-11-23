@@ -9,14 +9,14 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // Display a listing of the books
+    // Display a list of the books
     public function index()
     {
         $books = Book::with('member', 'categories')->get();
         return view('books.index', compact('books'));
     }
 
-    // Show the form for creating a new book
+    // Show the page for creating a new book
     public function create()
     {
         $categories = Category::all();
@@ -24,7 +24,7 @@ class BookController extends Controller
         return view('books.create', compact('categories', 'members'));
     }
 
-    // Store a newly created book in the database
+    // Store a newly created book
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +46,7 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', 'Book created successfully!');
     }
 
-    // Show the form for editing an existing book
+    // Show the page for editing an existing book
     public function edit(Book $book)
     {
         $categories = Category::all();
@@ -54,7 +54,7 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'categories', 'members'));
     }
 
-    // Update the specified book in the database
+    // Update the specified book
     public function update(Request $request, Book $book)
     {
         $request->validate([
@@ -76,12 +76,13 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', 'Book updated successfully!');
     }
 
-    // Delete the specified book from the database
+    // Delete the specified book
     public function destroy(Book $book)
     {
-        $book->categories()->detach(); // Detach categories from book before deletion
+        $book->categories()->detach();
         $book->delete();
 
         return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
+    
 }
