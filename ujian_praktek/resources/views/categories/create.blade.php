@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Create New Member</h1>
+    <h1>Create New Category</h1>
 
     <!-- Display Validation Errors -->
     @if ($errors->any())
@@ -14,13 +14,13 @@
         </div>
     @endif
 
-    <!-- Create Member Form -->
-    <form action="{{ route('members.store') }}" method="POST">
+    <!-- Create Category Form -->
+    <form action="{{ route('categories.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Member Name</label>
+            <label for="name" class="form-label">Category Name</label>
             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
-            
+
             <!-- Show validation warning for 'name' field -->
             @error('name')
                 <div class="invalid-feedback">
@@ -28,7 +28,6 @@
                 </div>
             @enderror
         </div>
-        
-        <button type="submit" class="btn btn-success">Create Member</button>
+        <button type="submit" class="btn btn-success">Create Category</button>
     </form>
 @endsection

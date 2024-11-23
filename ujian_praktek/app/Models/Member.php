@@ -9,7 +9,6 @@ class Member extends Model
     protected $fillable = [
         'id',
         'name',
-        'password'
     ];
 
     public function books()

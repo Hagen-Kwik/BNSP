@@ -9,14 +9,14 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // reads Book
+    // Display a listing of the books
     public function index()
     {
-        $books = Book::with('categories')->get();
+        $books = Book::with('member', 'categories')->get();
         return view('books.index', compact('books'));
     }
 
-    // create Book page
+    // Show the form for creating a new book
     public function create()
     {
         $categories = Category::all();
@@ -24,21 +24,29 @@ class BookController extends Controller
         return view('books.create', compact('categories', 'members'));
     }
 
-    // create Book
+    // Store a newly created book in the database
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'author' => 'required',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id',
+            'member_id' => 'nullable|exists:members,id',
         ]);
 
-        $book = Book::create($request->only('title', 'author', 'member_id'));
-        $book->categories()->sync($request->category_ids); // Sync categories
+        $book = Book::create([
+            'title' => $request->title,
+            'author' => $request->author,
+            'member_id' => $request->member_id,
+        ]);
 
-        return redirect()->route('books.index');
+        $book->categories()->sync($request->category_ids);
+
+        return redirect()->route('books.index')->with('success', 'Book created successfully!');
     }
 
-    // update Book page
+    // Show the form for editing an existing book
     public function edit(Book $book)
     {
         $categories = Category::all();
@@ -46,24 +54,34 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'categories', 'members'));
     }
 
-    // update Book 
+    // Update the specified book in the database
     public function update(Request $request, Book $book)
     {
         $request->validate([
-            'title' => 'required',
-            'author' => 'required',
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id',
+            'member_id' => 'nullable|exists:members,id',
         ]);
 
-        $book->update($request->only('title', 'author', 'member_id'));
+        $book->update([
+            'title' => $request->title,
+            'author' => $request->author,
+            'member_id' => $request->member_id,
+        ]);
+
         $book->categories()->sync($request->category_ids);
 
-        return redirect()->route('books.index');
+        return redirect()->route('books.index')->with('success', 'Book updated successfully!');
     }
 
-    // delete Book 
+    // Delete the specified book from the database
     public function destroy(Book $book)
     {
+        $book->categories()->detach(); // Detach categories from book before deletion
         $book->delete();
-        return redirect()->route('books.index');
+
+        return redirect()->route('books.index')->with('success', 'Book deleted successfully!');
     }
 }

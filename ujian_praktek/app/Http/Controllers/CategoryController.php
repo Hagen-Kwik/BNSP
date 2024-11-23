@@ -7,51 +7,61 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // reads Category
+
+    // Display a listing of the categories
     public function index()
     {
         $categories = Category::all();
         return view('categories.index', compact('categories'));
     }
 
-    // create category page
+    // Show the form for creating a new category
     public function create()
     {
         return view('categories.create');
     }
 
-    // create category
+    // Store a newly created category in the database
+    // Store new category
     public function store(Request $request)
     {
+        // Validate that category name is unique
         $request->validate([
-            'name' => 'required|unique:categories,name',
+            'name' => 'required|string|max:255|unique:categories,name',  // Ensures no duplicate names
         ]);
 
-        Category::create($request->all());
+        // Create new category
+        Category::create($request->only('name'));
+
+        // Redirect back to the categories list
         return redirect()->route('categories.index');
     }
 
-    // update category page
+    // Show the form for editing an existing category
     public function edit(Category $category)
     {
         return view('categories.edit', compact('category'));
     }
 
-    // update category 
+    // Update the specified category in the database
     public function update(Request $request, Category $category)
     {
+        // Validate that category name is unique, except for the current category
         $request->validate([
-            'name' => 'required|unique:categories,name,' . $category->id,
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,  // Ensures no duplicate names, except the current one
         ]);
 
-        $category->update($request->all());
+        // Update the category
+        $category->update($request->only('name'));
+
+        // Redirect back to the categories list
         return redirect()->route('categories.index');
     }
 
-    // delete category 
+    // Delete the specified category from the database
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Create New Member</h1>
+    <h1>Edit Member</h1>
 
     <!-- Display Validation Errors -->
     @if ($errors->any())
@@ -14,13 +14,15 @@
         </div>
     @endif
 
-    <!-- Create Member Form -->
-    <form action="{{ route('members.store') }}" method="POST">
+    <!-- Edit Member Form -->
+    <form action="{{ route('members.update', $member) }}" method="POST">
         @csrf
+        @method('PUT')
         <div class="mb-3">
             <label for="name" class="form-label">Member Name</label>
-            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
-            
+            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
+                value="{{ old('name', $member->name) }}" required>
+
             <!-- Show validation warning for 'name' field -->
             @error('name')
                 <div class="invalid-feedback">
@@ -28,7 +30,7 @@
                 </div>
             @enderror
         </div>
-        
-        <button type="submit" class="btn btn-success">Create Member</button>
+
+        <button type="submit" class="btn btn-warning">Update Member</button>
     </form>
 @endsection

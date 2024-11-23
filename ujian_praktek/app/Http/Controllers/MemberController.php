@@ -7,53 +7,55 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    //read Member
     public function index()
     {
         $members = Member::all();
         return view('members.index', compact('members'));
     }
 
-    // create member page
     public function create()
     {
         return view('members.create');
     }
 
-    // create member
     public function store(Request $request)
     {
+        // Validate the input, ensuring 'name' is unique
         $request->validate([
-            'name' => 'required',
-            'password' => 'required',
+            'name' => 'required|unique:members,name|max:255', // Ensure 'name' is unique
         ]);
 
-        Member::create($request->all());
-        return redirect()->route('members.index');
+        // Create the member
+        Member::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('members.index')->with('success', 'Member created successfully!');
     }
 
-    // update member page
     public function edit(Member $member)
     {
         return view('members.edit', compact('member'));
     }
 
-    // update member
     public function update(Request $request, Member $member)
     {
+        // Validate the input, ensuring 'name' is unique
         $request->validate([
-            'name' => 'required',
-            'password' => 'required',
+            'name' => 'required|unique:members,name,' . $member->id . '|max:255', // Exclude the current member
         ]);
 
-        $member->update($request->all());
-        return redirect()->route('members.index');
+        // Update the member
+        $member->update([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('members.index')->with('success', 'Member updated successfully!');
     }
 
-    // delete member 
     public function destroy(Member $member)
     {
         $member->delete();
-        return redirect()->route('members.index');
+        return redirect()->route('members.index')->with('success', 'Member deleted successfully!');
     }
 }
