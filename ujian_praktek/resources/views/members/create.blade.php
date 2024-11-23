@@ -20,15 +20,9 @@
         <div class="mb-3">
             <label for="name" class="form-label">Member Name</label>
             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
-            
-            <!-- Show validation warning for 'name' field -->
-            @error('name')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
+
         </div>
-        
+
         <button type="submit" class="btn btn-success">Create Member</button>
     </form>
 @endsection

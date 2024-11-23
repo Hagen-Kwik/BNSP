@@ -23,12 +23,6 @@
             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"
                 value="{{ old('name', $member->name) }}" required>
 
-            <!-- Show validation warning for 'name' field -->
-            @error('name')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
         </div>
 
         <button type="submit" class="btn btn-warning">Update Member</button>
